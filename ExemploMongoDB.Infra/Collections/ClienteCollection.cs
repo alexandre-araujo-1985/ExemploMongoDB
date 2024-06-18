@@ -26,13 +26,13 @@ namespace ExemploMongoDB.Infra.Collections
 
 		public static Cliente ConvertToCollection(ClienteCollection cliente)
 		{
-			return new Cliente
+			return cliente != null ? new Cliente
 			{
 				Nome = cliente.Nome,
 				DataCadastro = cliente.DataCadastro,
 				DataAlteracao = cliente.DataAlteracao,
 				Status = cliente.Status
-			};
+			} : new Cliente();
 		}
 	}
 }

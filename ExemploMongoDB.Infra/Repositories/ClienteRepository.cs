@@ -50,14 +50,14 @@ namespace ExemploMongoDB.Infra.Repositories
 			_ = ObjectId.TryParse(cliente.Id, out var id);
 			var filtro = Builders<ClienteCollection>.Filter.And();
 
-			if (id == ObjectId.Empty)
+			if (id != ObjectId.Empty)
 			{
-				filtro &= Builders<ClienteCollection>.Filter.Eq(c => c.Status, cliente.Status);
+				filtro &= Builders<ClienteCollection>.Filter.Eq(c => c.Id, id);
 			}
 
 			if (cliente.Nome != default)
 			{
-				filtro &= Builders<ClienteCollection>.Filter.Eq(c => c.Status, cliente.Status);
+				filtro &= Builders<ClienteCollection>.Filter.Eq(c => c.Nome, cliente.Nome);
 			}
 
 			if (cliente.Status.HasValue)
