@@ -7,5 +7,7 @@ namespace ExemploMongoDB.Domain.Contracts.Services
 		Cliente Pesquisar(Cliente cliente);
 		void Incluir(Cliente cliente);
 		void Alterar(Cliente cliente);
+		IEnumerable<Cliente> ListarTodos();
+		void Excluir(string id);
 	}
 }

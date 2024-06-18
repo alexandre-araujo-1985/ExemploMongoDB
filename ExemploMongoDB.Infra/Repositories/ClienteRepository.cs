@@ -19,6 +19,7 @@ namespace ExemploMongoDB.Infra.Repositories
 
 		public void Incluir(Cliente cliente)
 		{
+			cliente.Status = true;
 			_collection.InsertOne(ClienteCollection.ConvertToEntity(cliente));
 		}
 
@@ -48,12 +49,8 @@ namespace ExemploMongoDB.Infra.Repositories
 		public Cliente Pesquisar(Cliente cliente)
 		{
 			_ = ObjectId.TryParse(cliente.Id, out var id);
-			var filtro = Builders<ClienteCollection>.Filter.And();
 
-			if (id != ObjectId.Empty)
-			{
-				filtro &= Builders<ClienteCollection>.Filter.Eq(c => c.Id, id);
-			}
+			var filtro = Builders<ClienteCollection>.Filter.Eq(c => c.Id, id);
 
 			if (cliente.Nome != default)
 			{
@@ -67,7 +64,20 @@ namespace ExemploMongoDB.Infra.Repositories
 
 			var collection = _collection.Find(filtro);
 
-			return ClienteCollection.ConvertToCollection(collection.FirstOrDefault()!);
+			return ClienteCollection.ConvertToCollection(collection?.FirstOrDefault()!)!;
+		}
+
+		public IEnumerable<Cliente> ListarTodos()
+		{
+			var collection = _collection.Find(x => true).ToList();
+
+			return ClienteCollection.ConvertToCollection(collection)!;
+		}
+
+		public void Excluir(string id)
+		{
+			var cliente = new Cliente { Id = id, Status = false };
+			Alterar(cliente);
 		}
 	}
 }

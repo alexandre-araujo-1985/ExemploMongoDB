@@ -1,5 +1,6 @@
 ﻿using ExemploMongoDB.Requests;
 using Microsoft.AspNetCore.Mvc;
+using ExemploMongoDB.Domain.Entities;
 using ExemploMongoDB.Domain.Contracts.Services;
 
 namespace ExemploMongoDB.Controllers
@@ -19,22 +20,44 @@ namespace ExemploMongoDB.Controllers
 		public IActionResult Incluir([FromBody] ClienteRequest cliente)
 		{
 			_clienteService.Incluir(ClienteRequest.ConvertToCliente(cliente));
-			return Created("", cliente);
+			return Created($"api/cliente/{cliente.Id}", cliente);
 		}
 
 		[HttpPatch]
 		public IActionResult Alterar([FromBody] ClienteRequest cliente)
 		{
 			_clienteService.Alterar(ClienteRequest.ConvertToCliente(cliente));
-			return Created("", cliente);
+			return Ok(cliente);
 		}
 
 		[HttpGet("{id}")]
-		public IActionResult Pesquisar(string id, [FromQuery] string nome, [FromQuery] bool status)
+		[ProducesResponseType(400)]
+		public IActionResult Pesquisar(string id, [FromQuery] PesquisarClienteRequest cliente)
 		{
-			var cliente = new ClienteRequest { Id = id, Nome = nome, Status = status };
-			var clienteResponse = _clienteService.Pesquisar(ClienteRequest.ConvertToCliente(cliente));
+			var clienteResponse = _clienteService.Pesquisar(PesquisarClienteRequest.ConvertToCliente(id, cliente));
+
+			if (clienteResponse == null)
+				return BadRequest();
+
 			return Ok(clienteResponse);
+		}
+
+		[HttpGet]
+		[ProducesResponseType(200, Type = typeof(List<Cliente>))]
+		[ProducesResponseType(400)]
+		public IActionResult Pesquisar()
+		{
+			var clienteResponse = _clienteService.ListarTodos();
+
+			return Ok(clienteResponse);
+		}
+
+		[HttpDelete("{id}")]
+		public IActionResult Excluir(string id)
+		{
+			_clienteService.Excluir(id);
+
+			return NoContent();
 		}
 	}
 }

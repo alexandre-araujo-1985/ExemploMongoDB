@@ -24,15 +24,21 @@ namespace ExemploMongoDB.Infra.Collections
 			};
 		}
 
-		public static Cliente ConvertToCollection(ClienteCollection cliente)
+		public static Cliente? ConvertToCollection(ClienteCollection cliente)
 		{
 			return cliente != null ? new Cliente
 			{
+				Id = cliente.Id.ToString(),
 				Nome = cliente.Nome,
 				DataCadastro = cliente.DataCadastro,
 				DataAlteracao = cliente.DataAlteracao,
 				Status = cliente.Status
-			} : new Cliente();
+			} : null;
+		}
+
+		public static IEnumerable<Cliente> ConvertToCollection(IEnumerable<ClienteCollection> clientes)
+		{
+			return clientes.Select(x => ConvertToCollection(x))!;
 		}
 	}
 }
